@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">PayUSdk</string>
+
+    <!-- PurchaseDialog -->
+    <string name="buy">Купить</string>
+    <string name="price">Стоимость:</string>
+    <string name="rub">руб.</string>
+    <string name="dateFormat">yyyy-MM-dd HH:mm:ss</string>
+
+</resources>
