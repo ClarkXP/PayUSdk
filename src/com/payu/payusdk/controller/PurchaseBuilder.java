@@ -51,6 +51,10 @@ public class PurchaseBuilder implements ALUColumns {
 		data.put(ORDER_REF, number);
 	}
 
+	public void setPaymentMethod(String method) {
+		data.put(PAY_METHOD, method);
+	}
+
 	public void setLanguage(String language) {
 		data.put(LANGUAGE, language);
 	}
@@ -219,5 +223,15 @@ public class PurchaseBuilder implements ALUColumns {
 		if (!helper.isNullOrEmpty(version)) {
 			data.put(String.format(ORDER_VER_$, purchaseCount), version);
 		}
+	}
+
+	public String getPurchasePrice() {
+		int sum = 0;
+
+		for (int i = 0; i < purchaseCount + 1; ++i) {
+			sum += Integer.valueOf(data.get(String.format(ORDER_PNAME_$, i)));
+		}
+
+		return String.valueOf(sum);
 	}
 }

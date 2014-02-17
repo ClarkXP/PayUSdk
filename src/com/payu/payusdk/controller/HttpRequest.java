@@ -68,6 +68,9 @@ public class HttpRequest extends AsyncTask<Void, Boolean, Boolean> implements
 	private Callback callback;
 	private RequestCallback<Void, Boolean> requestCallback;
 
+	public String status;
+	public String returnMessage;
+
 	public HttpRequest(Context ctx, Callback callback) {
 		mCtx = ctx;
 		this.callback = callback;
@@ -97,13 +100,11 @@ public class HttpRequest extends AsyncTask<Void, Boolean, Boolean> implements
 
 			helper.WriteDebug(response);
 
-			String status = getXMLFieldValue(response, STATUS);
-			if (status != null) {
-				if (!status.equals(STATUS_SUCCESS)) {
-					showToast(getXMLFieldValue(response, RETURN_MESSAGE));
-					response = null;
-				}
+			status = getXMLFieldValue(response, STATUS);
+			returnMessage = getXMLFieldValue(response, RETURN_MESSAGE);
 
+			if (!status.equals(STATUS_SUCCESS)) {
+				response = null;
 			}
 
 		} catch (Exception e) {

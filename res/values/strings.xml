@@ -8,5 +8,6 @@
     <string name="price">Стоимость:</string>
     <string name="rub">руб.</string>
     <string name="dateFormat">yyyy-MM-dd HH:mm:ss</string>
+    <string name="tag">purchase</string>
 
 </resources>

@@ -69,12 +69,12 @@ public interface ALUColumns {
 	static final String CLIENT_TIME = "CLIENT_TIME";
 
 	// Response
-	static final String REFNO = "refno";
-	static final String ALIAS = "alias";
-	static final String STATUS = "status";
-	static final String RETURN_CODE = "return_code";
-	static final String RETURN_MESSAGE = "return_message";
-	static final String DATE = "date";
-	static final String URL_3DS = "url_3ds";
-	static final String HASH = "hash";
+	static final String REFNO = "REFNO";
+	static final String ALIAS = "ALIAS";
+	static final String STATUS = "STATUS";
+	static final String RETURN_CODE = "RETURN_CODE";
+	static final String RETURN_MESSAGE = "RETURN_MESSAGE";
+	static final String DATE = "DATE";
+	static final String URL_3DS = "URL_3DS";
+	static final String HASH = "HASH";
 }
