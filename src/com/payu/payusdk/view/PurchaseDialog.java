@@ -3,6 +3,7 @@ package com.payu.payusdk.view;
 import com.payu.payusdk.R;
 import com.payu.payusdk.controller.HttpRequest;
 import com.payu.payusdk.controller.HttpRequest.Callback;
+import com.payu.payusdk.controller.PurchaseBuilder;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -19,10 +20,10 @@ public class PurchaseDialog extends DialogFragment implements OnClickListener {
 
 	public static String TITLE = "purchaseTitle";
 	public static String SUBTITLE = "purchaseSubtitle";
-	public static String PRICE = "purchasePrice";
 	public static String DATA = "purchaseData";
 	public static String SECRET_KEY = "secretKey";
-	private Bundle extras;
+	private PurchaseBuilder data;
+	private String secretKey;
 	private HttpRequest request;
 
 	private AlertDialog dialog;
@@ -45,9 +46,11 @@ public class PurchaseDialog extends DialogFragment implements OnClickListener {
 
 	@Override
 	public void onResume() {
-		extras = getArguments();
-		((TextView) contentView.findViewById(R.id.price)).setText(extras
-				.getString(PRICE));
+		data = (PurchaseBuilder) getArguments().getParcelable(DATA);
+		data.setContext(getActivity());
+		((TextView) contentView.findViewById(R.id.price)).setText(data
+				.getPurchasePrice());
+		secretKey = getArguments().getString(SECRET_KEY);
 		super.onResume();
 	}
 
@@ -92,7 +95,7 @@ public class PurchaseDialog extends DialogFragment implements OnClickListener {
 					dialog.setCancelable(true);
 
 				}
-			}).postOrder(extras.getString(DATA), extras.getString(SECRET_KEY));
+			}).postOrder(data, secretKey);
 			request.execute();
 		} else if (id == R.id.successBtn) {
 			dismiss();

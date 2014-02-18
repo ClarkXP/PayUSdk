@@ -7,6 +7,7 @@ import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.util.Map.Entry;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
@@ -28,6 +29,7 @@ import android.os.AsyncTask;
 import android.support.v4.app.Fragment;
 import android.widget.Toast;
 
+import com.payu.payusdk.R;
 import com.payu.payusdk.model.ALUColumns;
 
 public class HttpRequest extends AsyncTask<Void, Boolean, Boolean> implements
@@ -56,7 +58,7 @@ public class HttpRequest extends AsyncTask<Void, Boolean, Boolean> implements
 	private static final String RETURN_CODE_REQUEST_EXPIRED = "REQUEST_EXPIRED";
 	private static final String RETURN_CODE_HASH_MISMATCH = "HASH_MISMATCH";
 
-	private static final String ENCODING_TYPE = "HmacMD5";
+	private static final String ENCODING_TYPE = "HmacSHA1";
 
 	private static final Integer REQ_TYPE_POST = 1;
 	@SuppressWarnings("unused")
@@ -115,7 +117,8 @@ public class HttpRequest extends AsyncTask<Void, Boolean, Boolean> implements
 		return response;
 	}
 
-	public HttpRequest postOrder(final String data, final String secretKey) {
+	public HttpRequest postOrder(final PurchaseBuilder data,
+			final String secretKey) {
 
 		requestCallback = new RequestCallback<Void, Boolean>() {
 
@@ -126,7 +129,11 @@ public class HttpRequest extends AsyncTask<Void, Boolean, Boolean> implements
 						.create();
 				builder.setMode(HttpMultipartMode.BROWSER_COMPATIBLE);
 				builder.addTextBody(ORDER_HASH,
-						encodeDataString(data, secretKey));
+						encodeDataString(data.build(), secretKey));
+
+				for (Entry<String, String> entry : data.getData().entrySet()) {
+					builder.addTextBody(entry.getKey(), entry.getValue());
+				}
 
 				try {
 
@@ -165,6 +172,7 @@ public class HttpRequest extends AsyncTask<Void, Boolean, Boolean> implements
 
 		try {
 			return new String(new Base64().encode(result), HTTP.UTF_8);
+			// return Base64.encodeToString(result, Base64.URL_SAFE);
 		} catch (UnsupportedEncodingException e) {
 			helper.WriteError(e.toString());
 		}
@@ -203,6 +211,8 @@ public class HttpRequest extends AsyncTask<Void, Boolean, Boolean> implements
 				}
 			} catch (IOException e) {
 				helper.WriteError(e.toString());
+				status = mCtx.getString(R.string.error);
+				returnMessage = mCtx.getString(R.string.cannotConnectServer);
 			}
 
 		} else {
@@ -231,6 +241,8 @@ public class HttpRequest extends AsyncTask<Void, Boolean, Boolean> implements
 				}
 			} catch (IOException e) {
 				helper.WriteError(e.toString());
+				status = mCtx.getString(R.string.error);
+				returnMessage = mCtx.getString(R.string.cannotConnectServer);
 			}
 
 		}

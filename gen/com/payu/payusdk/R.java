@@ -44,7 +44,9 @@ public final class R {
         /**  PurchaseDialog 
          */
         public static int buy=0x7f050001;
+        public static int cannotConnectServer=0x7f050007;
         public static int dateFormat=0x7f050004;
+        public static int error=0x7f050006;
         public static int price=0x7f050002;
         public static int rub=0x7f050003;
         public static int tag=0x7f050005;

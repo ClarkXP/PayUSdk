@@ -2,18 +2,24 @@ package com.payu.payusdk.controller;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.TimeZone;
 import java.util.TreeMap;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.os.Bundle;
+import android.os.Parcel;
+import android.os.Parcelable;
 
 import com.payu.payusdk.R;
 import com.payu.payusdk.model.ALUColumns;
 
-public class PurchaseBuilder implements ALUColumns {
+public class PurchaseBuilder implements ALUColumns, Parcelable {
 
 	private TreeMap<String, String> data;
 	private Context context;
+
+	private static final String DATA = "DATA";
 
 	private int purchaseCount;
 
@@ -26,12 +32,44 @@ public class PurchaseBuilder implements ALUColumns {
 		purchaseCount = -1;
 	}
 
+	@SuppressWarnings("unchecked")
+	public PurchaseBuilder(Parcel in) {
+		Bundle bundle = in.readBundle();
+		data = (TreeMap<String, String>) bundle.getSerializable(DATA);
+		purchaseCount = in.readInt();
+	}
+
+	public void setContext(Context context) {
+		this.context = context;
+	}
+
+	public static Creator<PurchaseBuilder> CREATOR = new Creator<PurchaseBuilder>() {
+
+		@Override
+		public PurchaseBuilder createFromParcel(Parcel arg0) {
+			new PurchaseBuilder(arg0);
+			return null;
+		}
+
+		@Override
+		public PurchaseBuilder[] newArray(int arg0) {
+			return null;
+		}
+
+	};
+
+	public TreeMap<String, String> getData() {
+		return data;
+	}
+
 	@SuppressLint("SimpleDateFormat")
 	public String build() {
 
-		data.put(ORDER_DATE,
-				new SimpleDateFormat(context.getString(R.string.dateFormat))
-						.format(new Date()));
+		SimpleDateFormat sdf = new SimpleDateFormat(
+				context.getString(R.string.dateFormat));
+		sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+
+		data.put(ORDER_DATE, sdf.format(new Date()));
 
 		StringBuilder sb = new StringBuilder(data.size() * 2);
 
@@ -45,6 +83,10 @@ public class PurchaseBuilder implements ALUColumns {
 
 	public void setMerchantId(String merchant) {
 		data.put(MERCHANT, merchant);
+	}
+
+	public String getMerchantId() {
+		return data.get(MERCHANT);
 	}
 
 	public void setOrderExternalNumber(String number) {
@@ -209,7 +251,7 @@ public class PurchaseBuilder implements ALUColumns {
 		}
 
 		if (!helper.isNullOrEmpty(price)) {
-			data.put(String.format(ORDER_PNAME_$, purchaseCount), price);
+			data.put(String.format(ORDER_PRICE_$, purchaseCount), price);
 		}
 
 		if (!helper.isNullOrEmpty(quantity)) {
@@ -229,9 +271,22 @@ public class PurchaseBuilder implements ALUColumns {
 		int sum = 0;
 
 		for (int i = 0; i < purchaseCount + 1; ++i) {
-			sum += Integer.valueOf(data.get(String.format(ORDER_PNAME_$, i)));
+			sum += Integer.valueOf(data.get(String.format(ORDER_PRICE_$, i)));
 		}
 
 		return String.valueOf(sum);
+	}
+
+	@Override
+	public int describeContents() {
+		return 0;
+	}
+
+	@Override
+	public void writeToParcel(Parcel dest, int flags) {
+		Bundle bundle = new Bundle();
+		bundle.putSerializable(DATA, data);
+		dest.writeBundle(bundle);
+		dest.writeInt(purchaseCount);
 	}
 }

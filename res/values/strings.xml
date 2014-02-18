@@ -9,5 +9,7 @@
     <string name="rub">руб.</string>
     <string name="dateFormat">yyyy-MM-dd HH:mm:ss</string>
     <string name="tag">purchase</string>
+    <string name="error">Error</string>
+    <string name="cannotConnectServer">Unable to connect server</string>
 
 </resources>

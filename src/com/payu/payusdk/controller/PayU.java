@@ -17,8 +17,7 @@ public class PayU {
 	public void showPurchaseFragment(PurchaseBuilder purchase, String secretKey) {
 		PurchaseDialog newFragment = new PurchaseDialog();
 		Bundle bundle = new Bundle();
-		bundle.putString(PurchaseDialog.DATA, purchase.build());
-		bundle.putString(PurchaseDialog.PRICE, purchase.getPurchasePrice());
+		bundle.putParcelable(PurchaseDialog.DATA, purchase);
 		bundle.putString(PurchaseDialog.SECRET_KEY, secretKey);
 		newFragment.setArguments(bundle);
 		newFragment.show(activity.getSupportFragmentManager(),
