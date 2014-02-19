@@ -4,7 +4,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Map.Entry;
@@ -12,7 +11,6 @@ import java.util.Map.Entry;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 
-import org.apache.commons.codec.binary.Base64;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -21,7 +19,6 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.mime.HttpMultipartMode;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.protocol.HTTP;
 
 import android.app.Activity;
 import android.content.Context;
@@ -32,6 +29,7 @@ import android.widget.Toast;
 import com.payu.payusdk.R;
 import com.payu.payusdk.model.ALUColumns;
 
+@SuppressWarnings("unused")
 public class HttpRequest extends AsyncTask<Void, Boolean, Boolean> implements
 		ALUColumns {
 
@@ -58,10 +56,9 @@ public class HttpRequest extends AsyncTask<Void, Boolean, Boolean> implements
 	private static final String RETURN_CODE_REQUEST_EXPIRED = "REQUEST_EXPIRED";
 	private static final String RETURN_CODE_HASH_MISMATCH = "HASH_MISMATCH";
 
-	private static final String ENCODING_TYPE = "HmacSHA1";
+	private static final String ENCODING_TYPE = "HmacMD5";
 
 	private static final Integer REQ_TYPE_POST = 1;
-	@SuppressWarnings("unused")
 	private static final Integer REQ_TYPE_GET = 0;
 
 	private final Context mCtx;
@@ -155,6 +152,7 @@ public class HttpRequest extends AsyncTask<Void, Boolean, Boolean> implements
 	}
 
 	private String encodeDataString(String data, String secretKey) {
+
 		SecretKeySpec keySpec = new SecretKeySpec(secretKey.getBytes(),
 				ENCODING_TYPE);
 
@@ -169,15 +167,12 @@ public class HttpRequest extends AsyncTask<Void, Boolean, Boolean> implements
 		}
 
 		byte[] result = mac.doFinal(data.getBytes());
-
-		try {
-			return new String(new Base64().encode(result), HTTP.UTF_8);
-			// return Base64.encodeToString(result, Base64.URL_SAFE);
-		} catch (UnsupportedEncodingException e) {
-			helper.WriteError(e.toString());
+		StringBuffer hexString = new StringBuffer();
+		for (int i = 0; i < result.length; ++i) {
+			hexString.append(Integer.toHexString(0xFF & result[i] | 0x100)
+					.substring(1, 3));
 		}
-
-		return "";
+		return hexString.toString();
 	}
 
 	private String GetJSONString(String url, int type, Object data)
