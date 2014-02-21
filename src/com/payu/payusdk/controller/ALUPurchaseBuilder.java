@@ -14,7 +14,7 @@ import android.os.Parcelable;
 import com.payu.payusdk.R;
 import com.payu.payusdk.model.ALUColumns;
 
-public class PurchaseBuilder implements ALUColumns, Parcelable {
+public class ALUPurchaseBuilder implements ALUColumns, Parcelable {
 
 	private TreeMap<String, String> data;
 	private Context context;
@@ -23,17 +23,14 @@ public class PurchaseBuilder implements ALUColumns, Parcelable {
 
 	private int purchaseCount;
 
-	public static final String PAYMENT_METHOD_VISA = "CCVISAMC";
-	public static final String PAYMENT_METHOD_MASTERCARD = "Mastercard";
-
-	public PurchaseBuilder(Context context) {
+	public ALUPurchaseBuilder(Context context) {
 		data = new TreeMap<String, String>();
 		this.context = context;
 		purchaseCount = -1;
 	}
 
 	@SuppressWarnings("unchecked")
-	public PurchaseBuilder(Parcel in) {
+	public ALUPurchaseBuilder(Parcel in) {
 		Bundle bundle = in.readBundle();
 		data = (TreeMap<String, String>) bundle.getSerializable(DATA);
 		purchaseCount = in.readInt();
@@ -43,16 +40,16 @@ public class PurchaseBuilder implements ALUColumns, Parcelable {
 		this.context = context;
 	}
 
-	public static Creator<PurchaseBuilder> CREATOR = new Creator<PurchaseBuilder>() {
+	public static Creator<ALUPurchaseBuilder> CREATOR = new Creator<ALUPurchaseBuilder>() {
 
 		@Override
-		public PurchaseBuilder createFromParcel(Parcel arg0) {
-			new PurchaseBuilder(arg0);
+		public ALUPurchaseBuilder createFromParcel(Parcel arg0) {
+			new ALUPurchaseBuilder(arg0);
 			return null;
 		}
 
 		@Override
-		public PurchaseBuilder[] newArray(int arg0) {
+		public ALUPurchaseBuilder[] newArray(int arg0) {
 			return null;
 		}
 

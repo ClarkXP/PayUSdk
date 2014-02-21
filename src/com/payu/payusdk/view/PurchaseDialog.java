@@ -3,7 +3,7 @@ package com.payu.payusdk.view;
 import com.payu.payusdk.R;
 import com.payu.payusdk.controller.HttpRequest;
 import com.payu.payusdk.controller.HttpRequest.Callback;
-import com.payu.payusdk.controller.PurchaseBuilder;
+import com.payu.payusdk.controller.ALUPurchaseBuilder;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -22,7 +22,7 @@ public class PurchaseDialog extends DialogFragment implements OnClickListener {
 	public static String SUBTITLE = "purchaseSubtitle";
 	public static String DATA = "purchaseData";
 	public static String SECRET_KEY = "secretKey";
-	private PurchaseBuilder data;
+	private ALUPurchaseBuilder data;
 	private String secretKey;
 	private HttpRequest request;
 
@@ -46,7 +46,7 @@ public class PurchaseDialog extends DialogFragment implements OnClickListener {
 
 	@Override
 	public void onResume() {
-		data = (PurchaseBuilder) getArguments().getParcelable(DATA);
+		data = (ALUPurchaseBuilder) getArguments().getParcelable(DATA);
 		data.setContext(getActivity());
 		((TextView) contentView.findViewById(R.id.price)).setText(data
 				.getPurchasePrice());

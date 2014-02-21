@@ -34,6 +34,7 @@ public class HttpRequest extends AsyncTask<Void, Boolean, Boolean> implements
 		ALUColumns {
 
 	private static final String PAYU_URL = "https://secure.payu.ru";
+	public static final String PAYU_LU_URL = "https://secure.payu.ru/order/lu.php";
 
 	static final int POST_POST_ORDER_REQ = 1;
 	private static final String POST_POST_ORDER_URL = "/order/alu.php";
@@ -114,7 +115,7 @@ public class HttpRequest extends AsyncTask<Void, Boolean, Boolean> implements
 		return response;
 	}
 
-	public HttpRequest postOrder(final PurchaseBuilder data,
+	public HttpRequest postOrder(final ALUPurchaseBuilder data,
 			final String secretKey) {
 
 		requestCallback = new RequestCallback<Void, Boolean>() {
@@ -151,7 +152,7 @@ public class HttpRequest extends AsyncTask<Void, Boolean, Boolean> implements
 		return this;
 	}
 
-	private String encodeDataString(String data, String secretKey) {
+	public static String encodeDataString(String data, String secretKey) {
 
 		SecretKeySpec keySpec = new SecretKeySpec(secretKey.getBytes(),
 				ENCODING_TYPE);
