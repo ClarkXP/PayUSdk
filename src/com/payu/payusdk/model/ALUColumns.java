@@ -72,9 +72,11 @@ public interface ALUColumns {
 	static final String REFNO = "REFNO";
 	static final String ALIAS = "ALIAS";
 	static final String STATUS = "STATUS";
+	static final String ORDERSTATUS = "ORDERSTATUS";
 	static final String RETURN_CODE = "RETURN_CODE";
 	static final String RETURN_MESSAGE = "RETURN_MESSAGE";
 	static final String DATE = "DATE";
 	static final String URL_3DS = "URL_3DS";
 	static final String HASH = "HASH";
+	static final String REFNOEXT = "REFNOEXT";
 }

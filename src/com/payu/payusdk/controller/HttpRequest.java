@@ -28,6 +28,7 @@ import android.widget.Toast;
 
 import com.payu.payusdk.R;
 import com.payu.payusdk.model.ALUColumns;
+import com.payu.payusdk.model.LUColumns;
 
 @SuppressWarnings("unused")
 public class HttpRequest extends AsyncTask<Void, Boolean, Boolean> implements
@@ -38,6 +39,8 @@ public class HttpRequest extends AsyncTask<Void, Boolean, Boolean> implements
 
 	static final int POST_POST_ORDER_REQ = 1;
 	private static final String POST_POST_ORDER_URL = "/order/alu.php";
+	static final int POST_CHECK_ORDER_REQ = 2;
+	private static final String POST_CHECK_ORDER_URL = "/order/ios.php";
 
 	private static final int STATUS_SUCCESS_CODE = 200;
 
@@ -56,6 +59,19 @@ public class HttpRequest extends AsyncTask<Void, Boolean, Boolean> implements
 	private static final String RETURN_CODE_INVALID_CURRENCY = "INVALID_CURRENCY";
 	private static final String RETURN_CODE_REQUEST_EXPIRED = "REQUEST_EXPIRED";
 	private static final String RETURN_CODE_HASH_MISMATCH = "HASH_MISMATCH";
+
+	private static final String ORDERSTATUS_NOT_FOUND = "NOT_FOUND";
+	private static final String ORDERSTATUS_WAITING_PAYMENT = "WAITING_PAYMENT";
+	private static final String ORDERSTATUS_CARD_NOTAUTHORIZED = "CARD_NOTAUTHORIZED";
+	private static final String ORDERSTATUS_IN_PROGRESS = "IN_PROGRESS";
+	private static final String ORDERSTATUS_PAYMENT_AUTHORIZED = "PAYMENT_AUTHORIZED";
+	private static final String ORDERSTATUS_COMPLETE = "COMPLETE";
+	private static final String ORDERSTATUS_FRAUD = "FRAUD";
+	private static final String ORDERSTATUS_INVALID = "INVALID";
+	private static final String ORDERSTATUS_TEST = "TEST";
+	private static final String ORDERSTATUS_CASH = "CASH";
+	private static final String ORDERSTATUS_REVERSED = "REVERSED";
+	private static final String ORDERSTATUS_REFUND = "REFUND";
 
 	private static final String ENCODING_TYPE = "HmacMD5";
 
@@ -95,17 +111,13 @@ public class HttpRequest extends AsyncTask<Void, Boolean, Boolean> implements
 			case POST_POST_ORDER_REQ:
 				response = GetJSONString(POST_POST_ORDER_URL, REQ_TYPE_POST,
 						data);
+			case POST_CHECK_ORDER_REQ:
+				response = GetJSONString(POST_CHECK_ORDER_URL, REQ_TYPE_POST,
+						data);
 				break;
 			}
 
 			helper.WriteDebug(response);
-
-			status = getXMLFieldValue(response, STATUS);
-			returnMessage = getXMLFieldValue(response, RETURN_MESSAGE);
-
-			if (!status.equals(STATUS_SUCCESS)) {
-				response = null;
-			}
 
 		} catch (Exception e) {
 			helper.WriteDebug(e.toString());
@@ -138,6 +150,62 @@ public class HttpRequest extends AsyncTask<Void, Boolean, Boolean> implements
 					String data = makeRequest(POST_POST_ORDER_REQ,
 							builder.build());
 					if (data == null) {
+						return false;
+					}
+
+					status = getXMLFieldValue(response, STATUS);
+					returnMessage = getXMLFieldValue(response, RETURN_MESSAGE);
+
+					if (!status.equals(STATUS_SUCCESS)) {
+						return false;
+					}
+				} catch (Exception e) {
+					helper.WriteDebug(e.toString());
+					return false;
+				}
+
+				return true;
+			}
+		};
+
+		return this;
+	}
+
+	public HttpRequest checkOrder(final String merchant,
+			final String orderReference, final String secretKey) {
+
+		requestCallback = new RequestCallback<Void, Boolean>() {
+
+			@Override
+			public Boolean doInBackground(Void... args) {
+
+				MultipartEntityBuilder builder = MultipartEntityBuilder
+						.create();
+				builder.setMode(HttpMultipartMode.BROWSER_COMPATIBLE);
+
+				builder.addTextBody(MERCHANT, merchant);
+				builder.addTextBody(REFNOEXT, orderReference);
+
+				StringBuilder sb = new StringBuilder();
+				sb.append(merchant.length());
+				sb.append(merchant);
+				sb.append(orderReference.length());
+				sb.append(orderReference);
+				builder.addTextBody(ORDER_HASH,
+						encodeDataString(sb.toString(), secretKey));
+
+				try {
+
+					String data = makeRequest(POST_CHECK_ORDER_REQ,
+							builder.build());
+					if (data == null) {
+						return false;
+					}
+
+					status = getXMLFieldValue(response, ORDERSTATUS);
+
+					if (!status.equals(ORDERSTATUS_COMPLETE)
+							&& !status.equals(ORDERSTATUS_CASH)) {
 						return false;
 					}
 				} catch (Exception e) {

@@ -295,7 +295,7 @@ public class LUPurchaseBuilder implements LUColumns, Parcelable {
 		}
 
 		if (!helper.isNullOrEmpty(priceType)) {
-			item.properties.put(ORDER_PRICE, priceType);
+			item.properties.put(ORDER_PRICE_TYPE, priceType);
 		}
 
 		if (!helper.isNullOrEmpty(quantity)) {
