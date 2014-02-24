@@ -83,21 +83,19 @@ public class LUPurchaseBuilder implements LUColumns, Parcelable {
 
 		StringBuilder sb = new StringBuilder(data.size() * 2);
 
+		TreeMap<String, String> temp = new TreeMap<String, String>();
+		temp.putAll(data);
+		temp.putAll(items.getFirst().properties);
+
 		boolean was = false;
 		for (Entry<String, String> value : data.entrySet()) {
 			if (was) {
 				sb.append("&");
 			}
-			sb.append(value.getKey() + "=" + value.getValue());
-			was = true;
-		}
-
-		for (Entry<String, String> value : items.getFirst().properties
-				.entrySet()) {
-			sb.append("&");
 			sb.append(value.getKey());
 			sb.append("=");
 			sb.append(value.getValue());
+			was = true;
 		}
 
 		return sb.toString();

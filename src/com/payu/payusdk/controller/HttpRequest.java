@@ -117,7 +117,7 @@ public class HttpRequest extends AsyncTask<Void, Boolean, Boolean> implements
 				break;
 			}
 
-			helper.WriteDebug(response);
+			helper.WriteDebug("response: " + response);
 
 		} catch (Exception e) {
 			helper.WriteDebug(e.toString());
@@ -156,9 +156,14 @@ public class HttpRequest extends AsyncTask<Void, Boolean, Boolean> implements
 					status = getXMLFieldValue(response, STATUS);
 					returnMessage = getXMLFieldValue(response, RETURN_MESSAGE);
 
-					if (!status.equals(STATUS_SUCCESS)) {
+					if (status != null) {
+						if (!status.equals(STATUS_SUCCESS)) {
+							return false;
+						}
+					} else {
 						return false;
 					}
+
 				} catch (Exception e) {
 					helper.WriteDebug(e.toString());
 					return false;
@@ -204,10 +209,15 @@ public class HttpRequest extends AsyncTask<Void, Boolean, Boolean> implements
 
 					status = getXMLFieldValue(response, ORDERSTATUS);
 
-					if (!status.equals(ORDERSTATUS_COMPLETE)
-							&& !status.equals(ORDERSTATUS_CASH)) {
+					if (status != null) {
+						if (!status.equals(ORDERSTATUS_COMPLETE)
+								&& !status.equals(ORDERSTATUS_CASH)) {
+							return false;
+						}
+					} else {
 						return false;
 					}
+
 				} catch (Exception e) {
 					helper.WriteDebug(e.toString());
 					return false;
@@ -277,6 +287,7 @@ public class HttpRequest extends AsyncTask<Void, Boolean, Boolean> implements
 				helper.WriteError(e.toString());
 				status = mCtx.getString(R.string.error);
 				returnMessage = mCtx.getString(R.string.cannotConnectServer);
+				return null;
 			}
 
 		} else {
@@ -307,6 +318,7 @@ public class HttpRequest extends AsyncTask<Void, Boolean, Boolean> implements
 				helper.WriteError(e.toString());
 				status = mCtx.getString(R.string.error);
 				returnMessage = mCtx.getString(R.string.cannotConnectServer);
+				return null;
 			}
 
 		}
