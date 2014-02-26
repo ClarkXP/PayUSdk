@@ -78,6 +78,11 @@ public class ALUPurchaseBuilder implements ALUColumns, Parcelable {
 		return sb.toString();
 	}
 
+	@Override
+	public String toString() {
+		return data.toString();
+	}
+
 	public void setMerchantId(String merchant) {
 		data.put(MERCHANT, merchant);
 	}
@@ -208,6 +213,10 @@ public class ALUPurchaseBuilder implements ALUColumns, Parcelable {
 
 	public void setDeliveryCountryCode(String countryCode) {
 		data.put(DELIVERY_COUNTRYCODE, countryCode);
+	}
+
+	public void setIsTestOrder(String flag) {
+		data.put(TESTORDER, flag);
 	}
 
 	public void setDeliveryCompany(String company) {

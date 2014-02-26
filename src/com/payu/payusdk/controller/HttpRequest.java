@@ -84,8 +84,8 @@ public class HttpRequest extends AsyncTask<Void, Boolean, Boolean> implements
 	private Callback callback;
 	private RequestCallback<Void, Boolean> requestCallback;
 
-	public String status;
-	public String returnMessage;
+	private String status;
+	private String returnMessage;
 
 	public HttpRequest(Context ctx, Callback callback) {
 		mCtx = ctx;
@@ -111,6 +111,7 @@ public class HttpRequest extends AsyncTask<Void, Boolean, Boolean> implements
 			case POST_POST_ORDER_REQ:
 				response = GetJSONString(POST_POST_ORDER_URL, REQ_TYPE_POST,
 						data);
+				break;
 			case POST_CHECK_ORDER_REQ:
 				response = GetJSONString(POST_CHECK_ORDER_URL, REQ_TYPE_POST,
 						data);
@@ -140,6 +141,8 @@ public class HttpRequest extends AsyncTask<Void, Boolean, Boolean> implements
 				builder.setMode(HttpMultipartMode.BROWSER_COMPATIBLE);
 				builder.addTextBody(ORDER_HASH,
 						encodeDataString(data.build(), secretKey));
+
+				helper.WriteDebug(data.toString());
 
 				for (Entry<String, String> entry : data.getData().entrySet()) {
 					builder.addTextBody(entry.getKey(), entry.getValue());
@@ -208,6 +211,7 @@ public class HttpRequest extends AsyncTask<Void, Boolean, Boolean> implements
 					}
 
 					status = getXMLFieldValue(response, ORDERSTATUS);
+					returnMessage = getXMLFieldValue(response, REFNO);
 
 					if (status != null) {
 						if (!status.equals(ORDERSTATUS_COMPLETE)
@@ -228,6 +232,18 @@ public class HttpRequest extends AsyncTask<Void, Boolean, Boolean> implements
 		};
 
 		return this;
+	}
+
+	public String getResponseStatus() {
+		return status;
+	}
+
+	public String getResponseMessage() {
+		return returnMessage;
+	}
+
+	public String getResponse() {
+		return response;
 	}
 
 	public static String encodeDataString(String data, String secretKey) {

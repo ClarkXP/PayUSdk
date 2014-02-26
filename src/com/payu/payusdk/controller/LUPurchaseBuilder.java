@@ -72,14 +72,14 @@ public class LUPurchaseBuilder implements LUColumns, Parcelable {
 	@SuppressLint("SimpleDateFormat")
 	public String build(String secretKey) {
 
-		data.put(ORDER_HASH,
-				HttpRequest.encodeDataString(buildForHash(), secretKey));
-
 		SimpleDateFormat sdf = new SimpleDateFormat(
 				context.getString(R.string.dateFormat));
 		sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
 
 		data.put(ORDER_DATE, sdf.format(new Date()));
+
+		data.put(ORDER_HASH,
+				HttpRequest.encodeDataString(buildForHash(), secretKey));
 
 		StringBuilder sb = new StringBuilder(data.size() * 2);
 
@@ -88,7 +88,7 @@ public class LUPurchaseBuilder implements LUColumns, Parcelable {
 		temp.putAll(items.getFirst().properties);
 
 		boolean was = false;
-		for (Entry<String, String> value : data.entrySet()) {
+		for (Entry<String, String> value : temp.entrySet()) {
 			if (was) {
 				sb.append("&");
 			}
@@ -103,18 +103,18 @@ public class LUPurchaseBuilder implements LUColumns, Parcelable {
 
 	public String buildForHash() {
 
-		TreeMap<String, String> temp = new TreeMap<String, String>();
+		LinkedList<String> temp = new LinkedList<String>();
 
 		for (String req : HASH_REQUIRED) {
 			if (data.containsKey(req)) {
-				temp.put(req, data.get(req));
+				temp.add(data.get(req));
 			} else if (items.getFirst().properties.containsKey(req)) {
-				temp.put(req, items.getFirst().properties.get(req));
+				temp.add(items.getFirst().properties.get(req));
 			}
 		}
 
 		StringBuilder sb = new StringBuilder(data.size() * 2);
-		for (String value : temp.values()) {
+		for (String value : temp) {
 			sb.append(value.length());
 			sb.append(value);
 		}

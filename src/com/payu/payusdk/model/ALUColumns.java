@@ -67,6 +67,7 @@ public interface ALUColumns {
 	// Other Details
 	static final String CLIENT_IP = "CLIENT_IP";
 	static final String CLIENT_TIME = "CLIENT_TIME";
+	static final String TESTORDER = "TESTORDER";
 
 	// Response
 	static final String REFNO = "REFNO";

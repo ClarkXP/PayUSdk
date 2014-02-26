@@ -78,7 +78,7 @@ public class PurchaseDialog extends DialogFragment implements OnClickListener {
 					contentView.findViewById(R.id.success).setVisibility(
 							View.VISIBLE);
 					((TextView) contentView.findViewById(R.id.successTitle))
-							.setText(request.status);
+							.setText(request.getResponseStatus());
 					dialog.setCancelable(true);
 				}
 
@@ -89,9 +89,9 @@ public class PurchaseDialog extends DialogFragment implements OnClickListener {
 					contentView.findViewById(R.id.error).setVisibility(
 							View.VISIBLE);
 					((TextView) contentView.findViewById(R.id.errorTitle))
-							.setText(request.status);
+							.setText(request.getResponseStatus());
 					((TextView) contentView.findViewById(R.id.errorMessage))
-							.setText(request.returnMessage);
+							.setText(request.getResponseMessage());
 					dialog.setCancelable(true);
 
 				}

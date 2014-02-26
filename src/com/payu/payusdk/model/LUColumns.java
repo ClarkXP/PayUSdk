@@ -2,15 +2,6 @@ package com.payu.payusdk.model;
 
 public interface LUColumns {
 
-	static final String[] HASH_REQUIRED = { "MERCHANT", "ORDER_DATE",
-			"ORDER_REF", "ORDER_PNAME[]", "ORDER_PCODE[]", "ORDER_PINFO[]",
-			"ORDER_PRICE[]", "ORDER_QTY[]", "ORDER_VAT[]", "ORDER_SHIPPING",
-			"PRICES_CURRENCY" };
-
-	static final String[] REQUEST_REQUIRED = { "MERCHANT", "ORDER_DATE",
-			"ORDER_PNAME[]", "ORDER_PCODE[]", "ORDER_PRICE[]", "ORDER_QTY[]",
-			"ORDER_VAT[]", "ORDER_SHIPPING", "PRICES_CURRENCY", "ORDER_HASH" };
-
 	static final String MERCHANT = "MERCHANT";
 	static final String ORDER_REF = "ORDER_REF";
 	static final String ORDER_DATE = "ORDER_DATE";
@@ -60,4 +51,12 @@ public interface LUColumns {
 	static final String DELIVERY_CITY = "DELIVERY_CITY";
 	static final String DELIVERY_STATE = "DELIVERY_STATE";
 	static final String DELIVERY_COUNTRYCODE = "DELIVERY_COUNTRYCODE";
+
+	static final String[] HASH_REQUIRED = { MERCHANT, ORDER_REF, ORDER_DATE,
+			ORDER_PNAME, ORDER_PCODE, ORDER_PINFO, ORDER_PRICE, ORDER_QTY,
+			ORDER_VAT, ORDER_SHIPPING, PRICES_CURRENCY, PAY_METHOD };
+
+	static final String[] REQUEST_REQUIRED = { MERCHANT, ORDER_DATE,
+			ORDER_PNAME, ORDER_PCODE, ORDER_PRICE, ORDER_QTY, ORDER_VAT,
+			ORDER_SHIPPING, PRICES_CURRENCY, ORDER_HASH };
 }
