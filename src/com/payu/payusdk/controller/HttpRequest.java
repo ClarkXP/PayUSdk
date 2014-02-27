@@ -375,8 +375,6 @@ public class HttpRequest extends AsyncTask<Void, Boolean, Boolean> implements
 	public interface Callback {
 		public void onSuccess();
 
-		public void onUpdate(int progress);
-
 		public void onError();
 	}
 
@@ -412,7 +410,7 @@ public class HttpRequest extends AsyncTask<Void, Boolean, Boolean> implements
 				}
 			}
 		} catch (IllegalStateException e) {
-
+			helper.WriteDebug(e.getMessage());
 		}
 
 		super.onPostExecute(result);

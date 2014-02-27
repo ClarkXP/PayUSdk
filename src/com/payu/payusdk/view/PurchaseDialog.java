@@ -67,11 +67,6 @@ public class PurchaseDialog extends DialogFragment implements OnClickListener {
 			request = new HttpRequest(this, new Callback() {
 
 				@Override
-				public void onUpdate(int progress) {
-
-				}
-
-				@Override
 				public void onSuccess() {
 					contentView.findViewById(R.id.progressBar).setVisibility(
 							View.GONE);
