@@ -27,12 +27,11 @@ import android.support.v4.app.Fragment;
 import android.widget.Toast;
 
 import com.payu.payusdk.R;
-import com.payu.payusdk.model.ALUColumns;
-import com.payu.payusdk.model.LUColumns;
+import com.payu.payusdk.model.RequestColumns;
 
 @SuppressWarnings("unused")
 public class HttpRequest extends AsyncTask<Void, Boolean, Boolean> implements
-		ALUColumns {
+		RequestColumns {
 
 	private static final String PAYU_URL = "https://secure.payu.ru";
 	public static final String PAYU_LU_URL = "https://secure.payu.ru/order/lu.php";
@@ -41,6 +40,10 @@ public class HttpRequest extends AsyncTask<Void, Boolean, Boolean> implements
 	private static final String POST_POST_ORDER_URL = "/order/alu.php";
 	static final int POST_CHECK_ORDER_REQ = 2;
 	private static final String POST_CHECK_ORDER_URL = "/order/ios.php";
+	static final int POST_DELIVERY_NOTIFICATION_REQ = 3;
+	private static final String POST_DELIVERY_NOTIFICATION_URL = "/order/idn.php";
+	static final int POST_REFUND_NOTIFICATION_REQ = 4;
+	private static final String POST_REFUND_NOTIFICATION_URL = "/order/irn.php";
 
 	private static final int STATUS_SUCCESS_CODE = 200;
 
@@ -72,6 +75,9 @@ public class HttpRequest extends AsyncTask<Void, Boolean, Boolean> implements
 	private static final String ORDERSTATUS_CASH = "CASH";
 	private static final String ORDERSTATUS_REVERSED = "REVERSED";
 	private static final String ORDERSTATUS_REFUND = "REFUND";
+
+	private static final String NOTIFICATION_RESPONSE_OK = "1";
+	private static final String NOTIFICATION_RESPONSE_ALREADY_DONE = "7";
 
 	private static final String ENCODING_TYPE = "HmacMD5";
 
@@ -116,6 +122,14 @@ public class HttpRequest extends AsyncTask<Void, Boolean, Boolean> implements
 				response = GetJSONString(POST_CHECK_ORDER_URL, REQ_TYPE_POST,
 						data);
 				break;
+			case POST_DELIVERY_NOTIFICATION_REQ:
+				response = GetJSONString(POST_DELIVERY_NOTIFICATION_URL,
+						REQ_TYPE_POST, data);
+				break;
+			case POST_REFUND_NOTIFICATION_REQ:
+				response = GetJSONString(POST_REFUND_NOTIFICATION_URL,
+						REQ_TYPE_POST, data);
+				break;
 			}
 
 			helper.WriteDebug("response: " + response);
@@ -150,9 +164,8 @@ public class HttpRequest extends AsyncTask<Void, Boolean, Boolean> implements
 
 				try {
 
-					String data = makeRequest(POST_POST_ORDER_REQ,
-							builder.build());
-					if (data == null) {
+					makeRequest(POST_POST_ORDER_REQ, builder.build());
+					if (response == null) {
 						return false;
 					}
 
@@ -161,6 +174,112 @@ public class HttpRequest extends AsyncTask<Void, Boolean, Boolean> implements
 
 					if (status != null) {
 						if (!status.equals(STATUS_SUCCESS)) {
+							return false;
+						}
+					} else {
+						return false;
+					}
+
+				} catch (Exception e) {
+					helper.WriteDebug(e.toString());
+					return false;
+				}
+
+				return true;
+			}
+		};
+
+		return this;
+	}
+
+	public HttpRequest sendDeliveryNotification(final NotificationBuilder data,
+			final String secretKey) {
+
+		requestCallback = new RequestCallback<Void, Boolean>() {
+
+			@Override
+			public Boolean doInBackground(Void... args) {
+
+				MultipartEntityBuilder builder = MultipartEntityBuilder
+						.create();
+				builder.setMode(HttpMultipartMode.BROWSER_COMPATIBLE);
+				builder.addTextBody(ORDER_HASH,
+						encodeDataString(data.build(), secretKey));
+
+				helper.WriteDebug(data.toString());
+
+				for (Entry<String, String> entry : data.getData().entrySet()) {
+					builder.addTextBody(entry.getKey(), entry.getValue());
+				}
+
+				try {
+
+					makeRequest(POST_DELIVERY_NOTIFICATION_REQ, builder.build());
+
+					if (response == null) {
+						return false;
+					}
+
+					status = getNotificationResponseCode(response);
+					returnMessage = getNotificationResponseMessage(response);
+
+					if (status != null) {
+						if (!status.equals(NOTIFICATION_RESPONSE_OK)
+								&& !status
+										.equals(NOTIFICATION_RESPONSE_ALREADY_DONE)) {
+							return false;
+						}
+					} else {
+						return false;
+					}
+
+				} catch (Exception e) {
+					helper.WriteDebug(e.toString());
+					return false;
+				}
+
+				return true;
+			}
+		};
+
+		return this;
+	}
+
+	public HttpRequest sendRefundNotification(final NotificationBuilder data,
+			final String secretKey) {
+
+		requestCallback = new RequestCallback<Void, Boolean>() {
+
+			@Override
+			public Boolean doInBackground(Void... args) {
+
+				MultipartEntityBuilder builder = MultipartEntityBuilder
+						.create();
+				builder.setMode(HttpMultipartMode.BROWSER_COMPATIBLE);
+				builder.addTextBody(ORDER_HASH,
+						encodeDataString(data.build(), secretKey));
+
+				helper.WriteDebug(data.toString());
+
+				for (Entry<String, String> entry : data.getData().entrySet()) {
+					builder.addTextBody(entry.getKey(), entry.getValue());
+				}
+
+				try {
+
+					makeRequest(POST_REFUND_NOTIFICATION_REQ, builder.build());
+
+					if (response == null) {
+						return false;
+					}
+
+					status = getNotificationResponseCode(response);
+					returnMessage = getNotificationResponseMessage(response);
+
+					if (status != null) {
+						if (!status.equals(NOTIFICATION_RESPONSE_OK)
+								&& !status
+										.equals(NOTIFICATION_RESPONSE_ALREADY_DONE)) {
 							return false;
 						}
 					} else {
@@ -199,18 +318,17 @@ public class HttpRequest extends AsyncTask<Void, Boolean, Boolean> implements
 				sb.append(merchant);
 				sb.append(orderReference.length());
 				sb.append(orderReference);
-				builder.addTextBody(ORDER_HASH,
+				builder.addTextBody(HASH,
 						encodeDataString(sb.toString(), secretKey));
 
 				try {
 
-					String data = makeRequest(POST_CHECK_ORDER_REQ,
-							builder.build());
-					if (data == null) {
+					makeRequest(POST_CHECK_ORDER_REQ, builder.build());
+					if (response == null) {
 						return false;
 					}
 
-					status = getXMLFieldValue(response, ORDERSTATUS);
+					status = getXMLFieldValue(response, ORDER_STATUS);
 					returnMessage = getXMLFieldValue(response, REFNO);
 
 					if (status != null) {
@@ -353,6 +471,29 @@ public class HttpRequest extends AsyncTask<Void, Boolean, Boolean> implements
 			return null;
 		}
 
+	}
+
+	private String getNotificationResponseCode(String response) {
+		if (response != null) {
+			int start = response.indexOf("|") + 1;
+			int end = response.indexOf("|", start + 1);
+
+			return response.substring(start, end);
+		} else {
+			return null;
+		}
+	}
+
+	private String getNotificationResponseMessage(String response) {
+		if (response != null) {
+			int start = response.indexOf("|") + 1;
+			start = response.indexOf("|", start + 1) + 1;
+			int end = response.indexOf("|", start + 1);
+
+			return response.substring(start, end);
+		} else {
+			return null;
+		}
 	}
 
 	private void showToast(final String message) {

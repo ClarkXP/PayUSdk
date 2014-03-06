@@ -52,7 +52,7 @@ public class PurchaseView extends WebView {
 		});
 	}
 
-	protected void onPageFinished(WebView view, String url) {
+	public void onPageFinished(WebView view, String url) {
 
 	}
 

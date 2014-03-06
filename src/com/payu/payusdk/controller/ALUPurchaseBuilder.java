@@ -12,9 +12,9 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.payu.payusdk.R;
-import com.payu.payusdk.model.ALUColumns;
+import com.payu.payusdk.model.RequestColumns;
 
-public class ALUPurchaseBuilder implements ALUColumns, Parcelable {
+public class ALUPurchaseBuilder implements RequestColumns, Parcelable {
 
 	private TreeMap<String, String> data;
 	private Context context;

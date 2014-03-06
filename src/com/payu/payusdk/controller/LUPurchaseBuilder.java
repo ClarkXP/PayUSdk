@@ -14,9 +14,9 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.payu.payusdk.R;
-import com.payu.payusdk.model.LUColumns;
+import com.payu.payusdk.model.RequestColumns;
 
-public class LUPurchaseBuilder implements LUColumns, Parcelable {
+public class LUPurchaseBuilder implements RequestColumns, Parcelable {
 
 	private TreeMap<String, String> data;
 	private LinkedList<Item> items;
