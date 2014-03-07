@@ -15,6 +15,9 @@ import android.os.Parcelable;
 import com.payu.payusdk.R;
 import com.payu.payusdk.model.RequestColumns;
 
+/**
+ * Класс, хранящий данные об уведомлении на сервер
+ */
 public class NotificationBuilder implements RequestColumns, Parcelable {
 
 	private TreeMap<String, String> data;
@@ -68,6 +71,9 @@ public class NotificationBuilder implements RequestColumns, Parcelable {
 		return data;
 	}
 
+	/**
+	 * @return строку, состоящую из строк данных и их длин
+	 */
 	@SuppressLint("SimpleDateFormat")
 	public String build() {
 

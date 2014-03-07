@@ -29,6 +29,9 @@ import android.widget.Toast;
 import com.payu.payusdk.R;
 import com.payu.payusdk.model.RequestColumns;
 
+/**
+ * Класс, используемый для обмена информацией с сервером
+ */
 @SuppressWarnings("unused")
 public class HttpRequest extends AsyncTask<Void, Boolean, Boolean> implements
 		RequestColumns {
@@ -142,6 +145,15 @@ public class HttpRequest extends AsyncTask<Void, Boolean, Boolean> implements
 		return response;
 	}
 
+	/**
+	 * Посылает данные о заказе по протоколу ALU
+	 * 
+	 * @param data
+	 *            Данные о покупке
+	 * @param secretKey
+	 *            Секретный ключ продавца
+	 * @return запрос для выполнения методом {@link AsyncTask#execute}
+	 */
 	public HttpRequest postOrder(final ALUPurchaseBuilder data,
 			final String secretKey) {
 
@@ -192,6 +204,15 @@ public class HttpRequest extends AsyncTask<Void, Boolean, Boolean> implements
 		return this;
 	}
 
+	/**
+	 * Посылает уведомление о наличии товара
+	 * 
+	 * @param data
+	 *            Данные о заказе
+	 * @param secretKey
+	 *            Секретный ключ продавца
+	 * @return запрос для выполнения методом {@link AsyncTask#execute}
+	 */
 	public HttpRequest sendDeliveryNotification(final NotificationBuilder data,
 			final String secretKey) {
 
@@ -245,6 +266,15 @@ public class HttpRequest extends AsyncTask<Void, Boolean, Boolean> implements
 		return this;
 	}
 
+	/**
+	 * Посылает уведомление о возврате денег
+	 * 
+	 * @param data
+	 *            Данные о заказе
+	 * @param secretKey
+	 *            Секретный ключ продавца
+	 * @return запрос для выполнения методом {@link AsyncTask#execute}
+	 */
 	public HttpRequest sendRefundNotification(final NotificationBuilder data,
 			final String secretKey) {
 
@@ -298,6 +328,17 @@ public class HttpRequest extends AsyncTask<Void, Boolean, Boolean> implements
 		return this;
 	}
 
+	/**
+	 * Посылает запрос на проверку статуса заказа
+	 * 
+	 * @param merchant
+	 *            Идентификатор продавца
+	 * @param orderReference
+	 *            номер заказа в системе
+	 * @param secretKey
+	 *            Секретный ключ продавца
+	 * @return запрос для выполнения методом {@link AsyncTask#execute}
+	 */
 	public HttpRequest checkOrder(final String merchant,
 			final String orderReference, final String secretKey) {
 
@@ -352,18 +393,35 @@ public class HttpRequest extends AsyncTask<Void, Boolean, Boolean> implements
 		return this;
 	}
 
+	/**
+	 * @return полный текст ответа на запрос к серверу
+	 */
 	public String getResponseStatus() {
 		return status;
 	}
 
+	/**
+	 * @return подробное сообщение о результате запроса
+	 */
 	public String getResponseMessage() {
 		return returnMessage;
 	}
 
+	/**
+	 * @return код или статус ответа на запрос
+	 */
 	public String getResponse() {
 		return response;
 	}
 
+	/**
+	 * 
+	 * @param data
+	 *            данные для шифрования
+	 * @param secretKey
+	 *            ключ продавца
+	 * @return закодированную ключом строку
+	 */
 	public static String encodeDataString(String data, String secretKey) {
 
 		SecretKeySpec keySpec = new SecretKeySpec(secretKey.getBytes(),
@@ -460,6 +518,13 @@ public class HttpRequest extends AsyncTask<Void, Boolean, Boolean> implements
 		return builder.toString();
 	}
 
+	/**
+	 * @param data
+	 *            текст xml-данных
+	 * @param field
+	 *            тег, значение которого надо найти
+	 * @return значение первого встретившегося тега XML-файла
+	 */
 	private String getXMLFieldValue(String data, String field) {
 
 		if (data.indexOf(field) != -1) {
@@ -473,6 +538,14 @@ public class HttpRequest extends AsyncTask<Void, Boolean, Boolean> implements
 
 	}
 
+	/**
+	 * 
+	 * @param response
+	 *            ответ сервера на запрос
+	 *            {@link HttpRequest#sendDeliveryNotification} или
+	 *            {@link HttpRequest#sendRefundNotification}
+	 * @return код ответа
+	 */
 	private String getNotificationResponseCode(String response) {
 		if (response != null) {
 			int start = response.indexOf("|") + 1;
@@ -484,6 +557,14 @@ public class HttpRequest extends AsyncTask<Void, Boolean, Boolean> implements
 		}
 	}
 
+	/**
+	 * 
+	 * @param response
+	 *            ответ сервера на запрос
+	 *            {@link HttpRequest#sendDeliveryNotification} или
+	 *            {@link HttpRequest#sendRefundNotification}
+	 * @return расшифровку кода ответа
+	 */
 	private String getNotificationResponseMessage(String response) {
 		if (response != null) {
 			int start = response.indexOf("|") + 1;
@@ -513,7 +594,11 @@ public class HttpRequest extends AsyncTask<Void, Boolean, Boolean> implements
 		});
 	}
 
+	/**
+	 * Интерфейс, описывающий методы, вызываемые при выполнении запроса
+	 */
 	public interface Callback {
+
 		public void onSuccess();
 
 		public void onError();
@@ -557,6 +642,9 @@ public class HttpRequest extends AsyncTask<Void, Boolean, Boolean> implements
 		super.onPostExecute(result);
 	}
 
+	/**
+	 * Класс ошибки, выкидываемой при выполнении пустого запроса
+	 */
 	class NoRequestCallbackException extends RuntimeException {
 		private static final long serialVersionUID = 618062735722934925L;
 	}

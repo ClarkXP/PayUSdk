@@ -1,5 +1,8 @@
 package com.payu.payusdk.model;
 
+/**
+ * Интерфейс, описывающий строки для обмена информацией с сервером.
+ */
 public interface RequestColumns {
 
 	static final String MERCHANT = "MERCHANT";

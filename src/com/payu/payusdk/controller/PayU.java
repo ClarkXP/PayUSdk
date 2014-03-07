@@ -10,6 +10,9 @@ import com.payu.payusdk.R;
 import com.payu.payusdk.view.PurchaseDialog;
 import com.payu.payusdk.view.PurchaseView;
 
+/**
+ * Класс для взаимодействия с возможностями PayU
+ */
 public class PayU {
 
 	private Activity activity;
@@ -22,6 +25,14 @@ public class PayU {
 		this.activity = activity;
 	}
 
+	/**
+	 * Отображает фрагмент для покупки по протоколу ALU
+	 * 
+	 * @param purchase
+	 *            Объект, содержащий данные о покупке
+	 * @param secretKey
+	 *            Секретный ключ продавца
+	 */
 	public void showPurchaseFragment(ALUPurchaseBuilder purchase,
 			String secretKey) {
 		PurchaseDialog newFragment = new PurchaseDialog();
@@ -34,6 +45,16 @@ public class PayU {
 				activity.getString(R.string.tag));
 	}
 
+	/**
+	 * Загружает форму покупки по протоколу LU
+	 * 
+	 * @param view
+	 *            Представление браузера, используемого для отображения формы
+	 * @param purchase
+	 *            Объект, содержащий данные о покупке
+	 * @param secretKey
+	 *            Секретный ключ продавца
+	 */
 	public PurchaseView loadPurchaseView(PurchaseView view,
 			LUPurchaseBuilder purchase, String secretKey) {
 		view.postUrl(HttpRequest.PAYU_LU_URL,

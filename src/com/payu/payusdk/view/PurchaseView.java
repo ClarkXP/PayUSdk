@@ -52,6 +52,11 @@ public class PurchaseView extends WebView {
 		});
 	}
 
+	/**
+	 * Метод, вызываемый когда страница загружена
+	 * 
+	 * @see WebViewClient#onPageFinished
+	 */
 	public void onPageFinished(WebView view, String url) {
 
 	}
@@ -65,6 +70,11 @@ public class PurchaseView extends WebView {
 		return super.onKeyDown(keyCode, event);
 	}
 
+	/**
+	 * Метод, вызываемый когда страница начинает загружаться
+	 * 
+	 * @see WebViewClient#onPageStarted
+	 */
 	public void onPageStarted(WebView view, String url, Bitmap favicon) {
 
 	}

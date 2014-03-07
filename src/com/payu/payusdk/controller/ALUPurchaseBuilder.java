@@ -14,6 +14,9 @@ import android.os.Parcelable;
 import com.payu.payusdk.R;
 import com.payu.payusdk.model.RequestColumns;
 
+/**
+ * Класс, хранящий данные о заказе для передачи по протоколу ALU
+ */
 public class ALUPurchaseBuilder implements RequestColumns, Parcelable {
 
 	private TreeMap<String, String> data;
@@ -59,6 +62,9 @@ public class ALUPurchaseBuilder implements RequestColumns, Parcelable {
 		return data;
 	}
 
+	/**
+	 * @return строку, состоящую из строк данных и их длин
+	 */
 	@SuppressLint("SimpleDateFormat")
 	public String build() {
 
@@ -273,6 +279,9 @@ public class ALUPurchaseBuilder implements RequestColumns, Parcelable {
 		}
 	}
 
+	/**
+	 * @return итоговую стоимость покупки
+	 */
 	public String getPurchasePrice() {
 		int sum = 0;
 

@@ -16,6 +16,9 @@ import android.os.Parcelable;
 import com.payu.payusdk.R;
 import com.payu.payusdk.model.RequestColumns;
 
+/**
+ * Класс, хранящий данные о заказе для передачи по протоколу LU
+ */
 public class LUPurchaseBuilder implements RequestColumns, Parcelable {
 
 	private TreeMap<String, String> data;
@@ -69,6 +72,12 @@ public class LUPurchaseBuilder implements RequestColumns, Parcelable {
 		return data;
 	}
 
+	/**
+	 * 
+	 * @param secretKey
+	 *            секретный ключ продавца
+	 * @return строку с закодированными ключом данными
+	 */
 	@SuppressLint("SimpleDateFormat")
 	public String build(String secretKey) {
 
@@ -101,6 +110,9 @@ public class LUPurchaseBuilder implements RequestColumns, Parcelable {
 		return sb.toString();
 	}
 
+	/**
+	 * @return строку, состоящую из строк данных и их длин
+	 */
 	public String buildForHash() {
 
 		LinkedList<String> temp = new LinkedList<String>();
@@ -319,6 +331,9 @@ public class LUPurchaseBuilder implements RequestColumns, Parcelable {
 		items.add(item);
 	}
 
+	/**
+	 * @return итоговую стоимость покупки
+	 */
 	public String getPurchasePrice() {
 		int sum = 0;
 
