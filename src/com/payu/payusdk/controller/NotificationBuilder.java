@@ -126,7 +126,7 @@ public class NotificationBuilder implements RequestColumns, Parcelable {
 		return data.get(MERCHANT);
 	}
 
-	public void setOrderExternalNumber(String number) {
+	public void setOrderNumber(String number) {
 		data.put(ORDER_REF, number);
 	}
 
